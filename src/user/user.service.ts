@@ -7,14 +7,10 @@ import { LoginDto } from './dto/login.dto';
 import axios from 'axios';
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
   async registerUser(registerUser: RegisterUserDto) {
     console.log(registerUser);
     try {
       const userRecord = await firebaseAdmin.auth().createUser({
-        displayName: registerUser.login,
         email: registerUser.email,
         password: registerUser.password,
       });
@@ -23,7 +19,7 @@ export class UserService {
       return userRecord;
     } catch (error) {
       console.error('Error creating user:', error);
-      throw new Error('User registration failed'); // Handle errors gracefully
+      throw new Error(`User registration failed ${error}`); // Handle errors gracefully
     }
   }
   async loginUser(payload: LoginDto) {
@@ -64,19 +60,4 @@ export class UserService {
     }
   }
 
-  findAll() {
-    return `This action returns all user`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
 }
