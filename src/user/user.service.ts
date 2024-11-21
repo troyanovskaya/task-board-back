@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
@@ -8,18 +8,21 @@ import axios from 'axios';
 @Injectable()
 export class UserService {
   async registerUser(registerUser: RegisterUserDto) {
-    console.log(registerUser);
     try {
       const userRecord = await firebaseAdmin.auth().createUser({
         email: registerUser.email,
         password: registerUser.password,
       });
 
-      console.log('User Record:', userRecord);
       return userRecord;
     } catch (error) {
-      console.error('Error creating user:', error);
-      throw new Error(`User registration failed ${error}`); // Handle errors gracefully
+      console.log(error);
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: error.message,
+      }, HttpStatus.FORBIDDEN, {
+        cause: error
+      });
     }
   }
   async loginUser(payload: LoginDto) {
@@ -28,15 +31,21 @@ export class UserService {
       const {displayName, localId, idToken, refreshToken, expiresIn } =
         await this.signInWithEmailAndPassword(email, password);
       return { displayName, email, localId, idToken, refreshToken, expiresIn };
-    } catch (error: any) {
-      if (error.message.includes('EMAIL_NOT_FOUND')) {
-        throw new Error('User not found.');
-      } else if (error.message.includes('INVALID_PASSWORD')) {
-        throw new Error('Invalid password.');
-      } else {
-        console.log('!!!!!')
-        throw new Error('Invalid credentials');
+    } catch (error) {
+      let mess = 'Something went wrong';
+      console.log(error.response)
+      if(error.response.error == 'ERR_INVALID_URL'){
+        mess = 'Server error, try later';
+      } else if(error.response.error == 'ERR_BAD_REQUEST'){
+        mess = 'Invalid login credentials';
       }
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        //error: error.response.data.error.message,
+        error: mess
+      }, HttpStatus.FORBIDDEN, {
+        cause: error
+      });
     }
   }
   private async signInWithEmailAndPassword(email: string, password: string) {
@@ -49,14 +58,19 @@ export class UserService {
   }
 
   private async sendPostRequest(url: string, data: any) {
+    try {
     const response = await axios.post(url, data, {
       headers: { 'Content-Type': 'application/json' },
     });
-    try {
-      console.log(response)
       return response.data;
     } catch (error) {
-      throw new Error('Invalid credentials');
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        //error: error.response.data.error.message,
+        error: error.code
+      }, HttpStatus.FORBIDDEN, {
+        cause: error
+      });
     }
   }
 

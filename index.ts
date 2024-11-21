@@ -21,7 +21,8 @@ const createFunction = async (expressInstance): Promise<void> => {
         credential: firebaseAdmin.credential.cert(firebaseServiceAccount),
       });
     }
-await app.init();
+  app.enableCors();
+  await app.init();
 };
 export const api = functions.https.onRequest(async (request, response) => {
   await createFunction(expressServer);

@@ -72,7 +72,6 @@ async function createNestServer(expressInstance: express.Express) {
       });
     // }
   }
-
   await app.init();
 }
 
@@ -94,7 +93,10 @@ if (!process.env.FUNCTIONS_EMULATOR && process.env.NODE_ENV !== 'production') {
       
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
-
+    app.enableCors({
+      allowedHeaders:"*",
+      origin: "*"
+    });
     await app.listen(process.env.PORTT); // Local server port
     console.log('NestJS server running at http://localhost:3000');
   }
