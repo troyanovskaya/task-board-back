@@ -15,12 +15,13 @@ const createFunction = async (expressInstance): Promise<void> => {
   if (fs.existsSync(firebaseKeyFilePath)) {
     const firebaseServiceAccount = JSON.parse(fs.readFileSync(firebaseKeyFilePath).toString());
 
-    // if (firebaseAdmin.apps.length === 0) {
+    if (firebaseAdmin.apps.length === 0) {
       console.log('Initialize Firebase Application.');
       firebaseAdmin.initializeApp({
         credential: firebaseAdmin.credential.cert(firebaseServiceAccount),
       });
     }
+  }
   app.enableCors();
   await app.init();
 };
