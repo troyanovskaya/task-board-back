@@ -17,11 +17,16 @@ export class TaskController {
   findAll() {
     return this.taskService.findAll();
   }
+  @Get('/user/:userId')
+  findAllForUser(@Param('userId') id: string) {
+    return this.taskService.findAllForUser(id);
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.taskService.findOne(+id);
   }
+
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {

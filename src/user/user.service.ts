@@ -14,7 +14,6 @@ export class UserService {
 
       return userRecord;
     } catch (error) {
-      console.log(error);
       throw new HttpException({
         status: HttpStatus.FORBIDDEN,
         error: error.message,
