@@ -21,7 +21,7 @@ export class TaskService {
         task: createTaskDto.task,
         status: createTaskDto.status
       });
-      return { message: 'Task created successfully!' };
+      return {id: newTaskRef.key} ;
 
     }catch(err){
       throw new HttpException({
@@ -89,7 +89,18 @@ export class TaskService {
 
 
 
-  remove(id: number) {
-    return `This action removes a #${id} task`;
+  async remove(id: string) {
+    try {
+      const taskRef = firebaseAdmin.database().ref(`tasks/${id}`);
+      await taskRef.remove();
+      return { message: 'Task deleted successfully!' };
+    } catch (err) {
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: err.message,
+      }, HttpStatus.FORBIDDEN, {
+        cause: err
+      });
+    }
   }
 }
