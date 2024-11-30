@@ -24,7 +24,12 @@ export class TaskService {
       return { message: 'Task created successfully!' };
 
     }catch(err){
-      return {error: err}
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: err.message,
+      }, HttpStatus.FORBIDDEN, {
+        cause: err
+      });
 
     }
   }
@@ -53,17 +58,36 @@ export class TaskService {
       })
       return sortedTasks;
     } catch(err){
-      return 'Error occured';
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: err.message,
+      }, HttpStatus.FORBIDDEN, {
+        cause: err
+      });
     }
+  }
+
+  async update(id: string, updateTaskDto: UpdateTaskDto) {
+    try{
+      const taskRef = firebaseAdmin.database().ref(`tasks/${id}`);
+      await taskRef.update(updateTaskDto);
+      return {message: `This action updates a #${id} task`};
+    }catch(err){
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: err.message,
+      }, HttpStatus.FORBIDDEN, {
+        cause: err
+      });
+    }
+
   }
 
   findOne(id: number) {
     return `This action returns a #${id} task`;
   }
 
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
-  }
+
 
   remove(id: number) {
     return `This action removes a #${id} task`;

@@ -19,6 +19,7 @@ const createFunction = async (expressInstance): Promise<void> => {
       console.log('Initialize Firebase Application.');
       firebaseAdmin.initializeApp({
         credential: firebaseAdmin.credential.cert(firebaseServiceAccount),
+        databaseURL: 'https://taskboard-eb7da-default-rtdb.firebaseio.com'
       });
     }
   }
