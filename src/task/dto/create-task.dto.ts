@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import {IsEnum, IsNotEmpty, Length } from "class-validator";
+import {IsEnum, IsNotEmpty, IsNumber, Length } from "class-validator";
 
 enum Status{
     'do', 'done', 'progress'
@@ -24,5 +24,10 @@ export class CreateTaskDto {
      @IsEnum(Status, { message: 'Status must be one of: do, progress, done' })
     @IsNotEmpty()
     status: Status;
+
+    @ApiProperty({ description: "Sequence number" })
+    @IsNotEmpty()
+    @IsNumber()
+    num: string;
 }
 

@@ -19,7 +19,8 @@ export class TaskService {
         creatorId: createTaskDto.creatorId,
         userId: createTaskDto.userId,
         task: createTaskDto.task,
-        status: createTaskDto.status
+        status: createTaskDto.status,
+        num: createTaskDto.num
       });
       return {id: newTaskRef.key} ;
 
