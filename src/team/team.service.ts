@@ -14,12 +14,7 @@ export class TeamService {
   async create(createTeamDto: CreateTeamDto) {
     try{
       const newTeamRef = firebaseAdmin.database().ref('teams').push();
-      await newTeamRef.set({
-        adminId: createTeamDto.adminId,
-        members: createTeamDto.members,
-        description: createTeamDto.description,
-        name: createTeamDto.name
-      });
+      await newTeamRef.set(createTeamDto);
       return {id: newTeamRef.key} ;
 
     }catch(err){

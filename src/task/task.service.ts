@@ -15,13 +15,7 @@ export class TaskService {
   async create(createTaskDto: CreateTaskDto) {
     try{
       const newTaskRef = firebaseAdmin.database().ref('tasks').push();
-      await newTaskRef.set({
-        creatorId: createTaskDto.creatorId,
-        userId: createTaskDto.userId,
-        task: createTaskDto.task,
-        status: createTaskDto.status,
-        num: createTaskDto.num
-      });
+      await newTaskRef.set(createTaskDto);
       return {id: newTaskRef.key} ;
 
     }catch(err){

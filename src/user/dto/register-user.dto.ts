@@ -9,4 +9,8 @@ export class RegisterUserDto {
   @IsNotEmpty()
   @Length(8, 20)
   password: string;
+  @ApiProperty({ description: "The user's login" })
+  @IsNotEmpty()
+  @Length(3, 20)
+  login: string;
 }

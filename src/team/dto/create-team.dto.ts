@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import {IsNotEmpty, Length } from "class-validator";
+import {IsBoolean, IsNotEmpty, Length } from "class-validator";
 export class CreateTeamDto {
     @ApiProperty({ description: "Team creator" })
     @IsNotEmpty()
@@ -10,9 +10,13 @@ export class CreateTeamDto {
     @ApiProperty({ description: "Team purpose description" })
     @IsNotEmpty()
     @Length(3, 100)
-    description: string[];
+    description: string;
     @ApiProperty({ description: "Team Name" })
     @IsNotEmpty()
     @Length(3, 50)
     name: string
+    @ApiProperty({ description: "Team Name" })
+    @IsNotEmpty()
+    @IsBoolean()
+    default: boolean = false
 }

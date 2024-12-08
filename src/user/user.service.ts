@@ -5,14 +5,25 @@ import { LoginDto } from './dto/login.dto';
 import axios from 'axios';
 @Injectable()
 export class UserService {
+  transformUsers(data: Record<string, any>): any[] {
+    return Object.entries(data).map(([id, user]) => ({
+      ...user
+    }));
+  }
   async registerUser(registerUser: RegisterUserDto) {
     try {
       const userRecord = await firebaseAdmin.auth().createUser({
         email: registerUser.email,
         password: registerUser.password,
       });
+      const newUserRef = firebaseAdmin.database().ref('users').push();
+      await newUserRef.set({
+        login: registerUser.login,
+        email: registerUser.email,
+        id: userRecord.uid
+      })
+      return {id: userRecord.uid};
 
-      return userRecord;
     } catch (error) {
       throw new HttpException({
         status: HttpStatus.FORBIDDEN,
@@ -21,6 +32,28 @@ export class UserService {
         cause: error
       });
     }
+  }
+  async checkIfEmailIsUsed(email){
+    try{
+      const userRef = firebaseAdmin.database().ref('users');
+      const snapshot = await userRef.once('value'); // Fetch the data once
+      const users = this.transformUsers(snapshot.val());
+      const sortedUsers = users.filter( (el) =>{
+        return el.email === email;
+      })
+      if(sortedUsers[0]){
+        return {exist: sortedUsers.length === 1, email: sortedUsers[0].email, id:sortedUsers[0].id};
+      }
+      return {exist: sortedUsers.length === 1, email: null, id:null};
+    } catch(err){
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: err.message,
+      }, HttpStatus.FORBIDDEN, {
+        cause: err
+      });
+    }
+
   }
   async loginUser(payload: LoginDto) {
     const { email, password } = payload;

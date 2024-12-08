@@ -29,5 +29,8 @@ export class CreateTaskDto {
     @IsNotEmpty()
     @IsNumber()
     num: string;
+    @ApiProperty({ description: "Team id" })
+    @IsNotEmpty()
+    teamId:string;
 }
 
