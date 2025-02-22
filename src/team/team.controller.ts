@@ -24,16 +24,16 @@ export class TeamController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.teamService.findOne(+id);
+    return this.teamService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTeamDto: UpdateTeamDto) {
-    return this.teamService.update(+id, updateTeamDto);
+    return this.teamService.update(id, updateTeamDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.teamService.remove(+id);
+  remove(@Param('id') id: string, @Body('userId') userId: string) {
+    return this.teamService.remove(id, userId);
   }
 }

@@ -3,11 +3,13 @@ import { UserService } from './user.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { TeamService } from 'src/team/team.service';
+import { TaskService } from 'src/task/task.service';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService,
-    private readonly teamService: TeamService){}
+    private readonly teamService: TeamService,
+    private readonly taskService: TaskService){}
 
   @Post('register')
   @UsePipes(new ValidationPipe({ transform: true }))
@@ -30,5 +32,10 @@ export class UserController {
   @UsePipes(new ValidationPipe({ transform: true }))
   email(@Body() body: {email:string}) {
     return this.userService.checkIfEmailIsUsed(body.email);
+  }
+  @Post('id')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  taskByUserId(@Body() body: {userId:string,}) {
+    return this.userService.getEmailById(body.userId);
   }
 }

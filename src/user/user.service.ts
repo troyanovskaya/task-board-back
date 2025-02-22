@@ -10,6 +10,16 @@ export class UserService {
       ...user
     }));
   }
+  transformTasks(data: Record<string, any>): any[] {
+    if(data){
+      return Object.entries(data).map(([id, task]) => ({
+        id, // Use the key as the 'id' property
+        ...task, // Spread the task properties
+      }));
+    } else {
+      return [];
+    }
+  }
   async registerUser(registerUser: RegisterUserDto) {
     try {
       const userRecord = await firebaseAdmin.auth().createUser({
@@ -54,6 +64,37 @@ export class UserService {
       });
     }
 
+  }
+  async getEmailById(userId:string){
+    try {
+      const userRef = firebaseAdmin.database().ref('users');
+      const taskRef = firebaseAdmin.database().ref('tasks');
+      const snapshot = await userRef.once('value'); // Fetch the data once
+      const taskSnapshot = await taskRef.once('value');
+      const users = this.transformUsers(snapshot.val());
+      const tasks = this.transformTasks(taskSnapshot.val());
+
+      const userTask = [];
+      users.forEach( (el) =>{
+        if(el.id === userId){
+          const t = tasks.filter( task =>{
+            return (task.userId === userId);
+          })
+          userTask.push({email: el.email, tasks: t, id: userId})
+        }
+      })
+      return userTask;
+    } catch (error) {
+      let mess = 'Something went wrong';
+      mess = 'Invalid id';
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        //error: error.response.data.error.message,
+        error: mess
+      }, HttpStatus.FORBIDDEN, {
+        cause: error
+      });
+    }
   }
   async loginUser(payload: LoginDto) {
     const { email, password } = payload;

@@ -7,10 +7,14 @@ import { error } from 'console';
 @Injectable()
 export class TaskService {
   transformTasks(data: Record<string, any>): any[] {
-    return Object.entries(data).map(([id, task]) => ({
-      id, // Use the key as the 'id' property
-      ...task, // Spread the task properties
-    }));
+    if(data){
+      return Object.entries(data).map(([id, task]) => ({
+        id, // Use the key as the 'id' property
+        ...task, // Spread the task properties
+      }));
+    } else {
+      return [];
+    }
   }
   async create(createTaskDto: CreateTaskDto) {
     try{
