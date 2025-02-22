@@ -82,11 +82,6 @@ export class TaskService {
 
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} task`;
-  }
-
-
 
   async remove(id: string) {
     try {

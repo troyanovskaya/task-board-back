@@ -27,11 +27,6 @@ export class TaskController {
     return this.taskService.update(id, updateTaskDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.taskService.findOne(+id);
-  }
-
 
   @Delete(':id')
   remove(@Param('id') id: string) {

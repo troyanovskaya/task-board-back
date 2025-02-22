@@ -131,15 +131,8 @@ export class TeamService {
     try {
       const teamRef = firebaseAdmin.database().ref(`teams/${id}`);
       const team = (await teamRef.once('value')).val();
-      // console.log(team);
-      // if(team.adminId === userId){
         await teamRef.remove();
         return { message: 'Task deleted successfully!' };
-      // } else{
-      //   return { message: 'User does not have right to delete this board!' };
-      // }
-
-
     } catch (err) {
       throw new HttpException({
         status: HttpStatus.FORBIDDEN,
